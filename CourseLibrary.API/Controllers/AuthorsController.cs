@@ -1,4 +1,5 @@
-﻿using CourseLibrary.API.Helpers;
+﻿using AutoMapper;
+using CourseLibrary.API.Helpers;
 using CourseLibrary.API.Models;
 using CourseLibrary.API.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -12,42 +13,32 @@ namespace CourseLibrary.API.Controllers
     public class AuthorsController : ControllerBase
     {
         private readonly ICourseLibraryRepository _courseLibraryRepository;
+        readonly IMapper mapper;
 
-        public AuthorsController(ICourseLibraryRepository courseLibraryRepository)
+        public AuthorsController(ICourseLibraryRepository courseLibraryRepository,
+            IMapper mapper)
         {
             _courseLibraryRepository = courseLibraryRepository ??
                 throw new ArgumentNullException(nameof(courseLibraryRepository));
+            this.mapper = mapper;
         }
 
         [HttpGet()]
         public ActionResult<IEnumerable<AuthorDto>> GetAuthors()
         {
             var authorsFromRepo = _courseLibraryRepository.GetAuthors();
-            var authors = new List<AuthorDto>();
-            foreach (var author in authorsFromRepo)
-            {
-                authors.Add(new AuthorDto
-                {
-                    Id = author.Id,
-                    Name = $"{ author.FirstName} {author.LastName}",
-                    Age = author.DateOfBirth.GetCurrentAge(),
-                    MainCategory = author.MainCategory
-                });
-            }
-            return Ok(authors);
+            return Ok(mapper.Map<IEnumerable<AuthorDto>>(authorsFromRepo));
         }
 
         [HttpGet("{authorId}")]
-        public IActionResult GetAuthor(Guid authorId)
+        public ActionResult<AuthorDto> GetAuthor(Guid authorId)
         {
             var authorFromRepo = _courseLibraryRepository.GetAuthor(authorId);
-
             if (authorFromRepo == null)
             {
                 return NotFound();
             }
-             
-            return Ok(authorFromRepo);
+            return Ok(mapper.Map<AuthorDto>(authorFromRepo));
         }
     }
 }

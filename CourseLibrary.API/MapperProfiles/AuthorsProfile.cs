@@ -22,6 +22,7 @@ namespace CourseLibrary.API.MapperProfiles
                 );
 
             CreateMap<Models.AuthorForCreationDto, Entities.Author>();
+            CreateMap<Models.AuthorForUpdateDto, Entities.Author>();
         }
     }
 }

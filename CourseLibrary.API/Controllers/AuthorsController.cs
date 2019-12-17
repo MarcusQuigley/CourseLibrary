@@ -64,17 +64,20 @@ namespace CourseLibrary.API.Controllers
                 authorToReturn);
         }
 
-        [HttpPut]
-        public ActionResult<AuthorDto> UpdateAuthor(Entities.Author author)
+        [HttpPut("{authorId}")]
+        public IActionResult UpdateAuthor(Guid authorId, AuthorForUpdateDto author)
         {
-             _courseLibraryRepository.UpdateAuthor(author);
-            _courseLibraryRepository.Save();
-            if (author == null)
+            if (!_courseLibraryRepository.AuthorExists(authorId))
             {
                 return BadRequest();
             }
 
-            return Accepted(mapper.Map<AuthorDto>(author));
+            var authorEntity = _courseLibraryRepository.GetAuthor(authorId);
+            mapper.Map(author, authorEntity);
+            _courseLibraryRepository.UpdateAuthor(authorEntity);
+            _courseLibraryRepository.Save();
+
+            return NoContent();
         }
     }
 }

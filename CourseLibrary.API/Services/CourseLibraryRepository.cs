@@ -167,12 +167,7 @@ namespace CourseLibrary.API.Services
 
         public void UpdateAuthor(Author author)
         {
-            if (author == null)
-            {
-                throw new ArgumentNullException(nameof(author));
-            }
-            _context.Authors.Update(author);
-          //  _context.SaveChanges();
+            //no code needed
         }
 
         public bool Save()

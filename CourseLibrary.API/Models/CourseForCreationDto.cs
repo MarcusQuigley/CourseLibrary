@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace CourseLibrary.API.Models
 {
-    [CourseMustBeDifferentFromDescriptionAttribute]
+    [CourseMustBeDifferentFromDescriptionAttribute(ErrorMessage = "Title must be different than Description")]
     public class CourseForCreationDto
     {
-        [Required]
-        [MaxLength(100)]
+        [Required(ErrorMessage ="You should fill out a title")]
+        [MaxLength(100, ErrorMessage = "Title should not be more than 100 characters")]
         public string Title { get; set; }
-        [MaxLength(1500)]
+        [MaxLength(1500, ErrorMessage = "Description should not be more than 1500 characters")]
         public string Description { get; set; }
     }
 }

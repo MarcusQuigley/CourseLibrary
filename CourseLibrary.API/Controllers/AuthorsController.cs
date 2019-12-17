@@ -24,6 +24,13 @@ namespace CourseLibrary.API.Controllers
             this.mapper = mapper;
         }
 
+        [HttpOptions]
+        public IActionResult GetAuthorsOptions()
+        {
+            Response.Headers.Add("Allow", "GET, OPTIONS, POST");
+            return Ok();
+        }
+
         [HttpGet()]
         [HttpHead]
         public ActionResult<IEnumerable<AuthorDto>> GetAuthors(
@@ -57,11 +64,17 @@ namespace CourseLibrary.API.Controllers
                 authorToReturn);
         }
 
-        [HttpOptions]
-        public IActionResult GetAuthorsOptions()
+        [HttpPut]
+        public ActionResult<AuthorDto> UpdateAuthor(Entities.Author author)
         {
-            Response.Headers.Add("Allow","GET, OPTIONS, POST");
-            return Ok();
+             _courseLibraryRepository.UpdateAuthor(author);
+            _courseLibraryRepository.Save();
+            if (author == null)
+            {
+                return BadRequest();
+            }
+
+            return Accepted(mapper.Map<AuthorDto>(author));
         }
     }
 }
